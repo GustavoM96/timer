@@ -83,3 +83,48 @@ export const Status = styled.span<StatusProps>`
     background: ${(props) => props.theme[STATUS_COLOR[props.statusColor]]};
   }
 `;
+export const ClearContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  align-items: left;
+  justify-content: space-between;
+`;
+
+export const CycleActionButton = styled.button`
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  cursor: pointer;
+  color: ${(props) => props.theme["gray-100"]};
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-left: none;
+  border-right: none;
+
+  &:not(:disabled):hover {
+    border-bottom: 3px solid ${(props) => props.theme["green-500"]};
+  }
+  &.active {
+    color: ${(props) => props.theme["green-500"]};
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;

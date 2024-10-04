@@ -1,15 +1,32 @@
 import { useContext } from "react";
-import { HistoryContainer, HistoryList, Status } from "./styles";
+import {
+  ClearContainer,
+  CycleActionButton,
+  HistoryContainer,
+  HistoryList,
+  Status,
+  ButtonContainer,
+  TitleContainer,
+} from "./styles";
 import { CyclesContext } from "../../contexts/CyclesContext";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Play, Trash } from "phosphor-react";
 
 export function History() {
-  const { cycles } = useContext(CyclesContext);
+  const { cycles, clearCycles, activatorCycle } = useContext(CyclesContext);
 
   return (
     <HistoryContainer>
-      <h1>Meu Histórico</h1>
+      <TitleContainer>
+        <h1>Meu Histórico</h1>
+        <CycleActionButton
+          onClick={() => clearCycles()}
+          title="Deletar todo o histórico"
+        >
+          <Trash color="red" size={24} />
+        </CycleActionButton>
+      </TitleContainer>
       <HistoryList>
         <table>
           <thead>
@@ -33,16 +50,32 @@ export function History() {
                     })}
                   </td>
                   <td>
-                    {cycle.finisedDate && (
-                      <Status statusColor="green">Concluído</Status>
-                    )}
-                    {cycle.interruptDate && (
-                      <Status statusColor="red">Interrumpido</Status>
-                    )}
-
-                    {!cycle.interruptDate && !cycle.finisedDate && (
-                      <Status statusColor="yellow">Em Andamento</Status>
-                    )}
+                    <ClearContainer>
+                      {cycle.finisedDate && (
+                        <Status statusColor="green">Concluído</Status>
+                      )}
+                      {cycle.interruptDate && (
+                        <Status statusColor="red">Interrumpido</Status>
+                      )}
+                      {cycle.isActive && (
+                        <Status statusColor="yellow">Em Andamento</Status>
+                      )}
+                      <ButtonContainer>
+                        <CycleActionButton
+                          title="Deletar"
+                          onClick={() => clearCycles(cycle.id)}
+                        >
+                          <Trash color="red" size={24} />
+                        </CycleActionButton>
+                        <CycleActionButton
+                          title="Ativar tarefa"
+                          disabled={cycle.isActive || !!cycle.finisedDate}
+                          onClick={() => activatorCycle(cycle)}
+                        >
+                          <Play color="green" size={24} />
+                        </CycleActionButton>
+                      </ButtonContainer>
+                    </ClearContainer>
                   </td>
                 </tr>
               );

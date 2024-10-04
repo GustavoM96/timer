@@ -6,7 +6,6 @@ import { CountDownContainer, Separator } from "./styles";
 export function CountDown() {
   const {
     activeCycle,
-    activeCycleId,
     amountSecondsPassed,
     markCurrentCycleAsFinished,
     setSecondsPassed,
@@ -26,8 +25,8 @@ export function CountDown() {
 
         if (secondsDifference >= totalSeconds) {
           markCurrentCycleAsFinished();
-
           setSecondsPassed(totalSeconds);
+
           clearInterval(interval);
         } else {
           setSecondsPassed(secondsDifference);
@@ -38,13 +37,7 @@ export function CountDown() {
     return () => {
       clearInterval(interval);
     };
-  }, [
-    activeCycle,
-    totalSeconds,
-    activeCycleId,
-    setSecondsPassed,
-    markCurrentCycleAsFinished,
-  ]);
+  }, [activeCycle, totalSeconds, setSecondsPassed, markCurrentCycleAsFinished]);
 
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0;
 
@@ -57,6 +50,8 @@ export function CountDown() {
   useEffect(() => {
     if (activeCycle) {
       document.title = `${minutes}:${seconds}`;
+    } else {
+      document.title = "Ignite Timer";
     }
   }, [minutes, seconds, activeCycle]);
 
