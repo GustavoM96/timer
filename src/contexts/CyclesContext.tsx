@@ -38,6 +38,15 @@ interface CyclesContextProviderProps {
   children: ReactNode;
 }
 
+export function GetSecondsToFisishCycle(cycle: Cycle) {
+  const diffSecondsToNow = differenceInSeconds(
+    new Date(),
+    new Date(cycle.restartDate ?? cycle.startDate)
+  );
+  console.log(diffSecondsToNow);
+  return cycle.secondsPassedRunning + diffSecondsToNow;
+}
+
 export function CyclesContextProvider({
   children,
 }: CyclesContextProviderProps) {
@@ -55,12 +64,11 @@ export function CyclesContextProvider({
     }
   );
   const { cycles } = cycleState;
-  console.log(cycles);
   const activeCycle = cycles.find((cycle) => cycle.isActive);
 
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(() => {
     if (activeCycle) {
-      return differenceInSeconds(new Date(), new Date(activeCycle.startDate));
+      return GetSecondsToFisishCycle(activeCycle);
     }
     return 0;
   });
@@ -76,8 +84,6 @@ export function CyclesContextProvider({
   }
 
   function activatorCycle(cycle: Cycle) {
-    console.log(cycle);
-
     setAmountSecondsPassed(
       differenceInSeconds(new Date(), new Date(cycle.startDate))
     );
@@ -92,6 +98,7 @@ export function CyclesContextProvider({
       minutesAmount,
       startDate: new Date(),
       isActive: true,
+      secondsPassedRunning: 0,
     };
     dispatch(addNewCycleAction(newCycle));
   }

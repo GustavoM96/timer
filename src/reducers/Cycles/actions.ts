@@ -30,7 +30,5 @@ export function clearAllCycleAction(): CyclesReducerAction {
 }
 
 export function activeCycleByIdAction(cycleId: string): CyclesReducerAction {
-  console.log(ActionTypes.ACTIVE_BY_ID);
-
   return { type: ActionTypes.ACTIVE_BY_ID, payload: { cycleId } };
 }

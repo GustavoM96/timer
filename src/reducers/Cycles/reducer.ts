@@ -1,3 +1,4 @@
+import { GetSecondsToFisishCycle } from "../../contexts/CyclesContext";
 import { ActionTypes } from "./actions";
 import { produce } from "immer";
 export interface CycleState {
@@ -11,6 +12,8 @@ export interface Cycle {
   interruptDate?: Date;
   finisedDate?: Date;
   isActive: boolean;
+  restartDate?: Date;
+  secondsPassedRunning: number;
 }
 interface CyclesReducerActionPayload {
   newCycle?: Cycle;
@@ -33,8 +36,10 @@ export function cyclesReducer(state: CycleState, action: CyclesReducerAction) {
         return state;
       }
       return produce(state, (draft) => {
-        draft.cycles[index].isActive = false;
-        draft.cycles[index].interruptDate = new Date();
+        const cycle = draft.cycles[index];
+        cycle.isActive = false;
+        cycle.interruptDate = new Date();
+        cycle.secondsPassedRunning = GetSecondsToFisishCycle(cycle);
       });
     }
     case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISH: {
@@ -55,7 +60,6 @@ export function cyclesReducer(state: CycleState, action: CyclesReducerAction) {
       });
     }
     case ActionTypes.CLEAR_ALL_CYCLE: {
-      console.log(state);
       return produce(state, (draft) => {
         draft.cycles = [];
       });
@@ -70,8 +74,6 @@ export function cyclesReducer(state: CycleState, action: CyclesReducerAction) {
       const indexToDesactive = state.cycles.findIndex(
         (cycle) => cycle.isActive
       );
-      console.log(indexToActive);
-      console.log(indexToDesactive);
 
       if (indexToActive < 0) {
         return state;
@@ -80,13 +82,10 @@ export function cyclesReducer(state: CycleState, action: CyclesReducerAction) {
         if (indexToDesactive >= 0) {
           draft.cycles[indexToDesactive].isActive = false;
           draft.cycles[indexToDesactive].interruptDate = new Date();
-          console.log("desativando");
-          console.log(draft.cycles[indexToDesactive].minutesAmount);
         }
-        console.log("ativando");
-        console.log(draft.cycles[indexToActive].minutesAmount);
         draft.cycles[indexToActive].isActive = true;
         draft.cycles[indexToActive].interruptDate = undefined;
+        draft.cycles[indexToActive].restartDate = new Date();
       });
     }
     default:
